@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ttt</title>
+</head>
+<body> 
+
+    <p>current free spaces: {{ freeSpaces }}</p>
+
+    <div class="outer-wall">
+        <div class="cell">{{ board[0][0] }}</div>
+        <div class="cell">{{ board[0][1] }}</div>
+        <div class="cell">{{ board[0][2] }}</div>
+        <div class="cell">{{ board[1][0] }}</div>
+        <div class="cell">{{ board[1][1] }}</div>
+        <div class="cell">{{ board[1][2] }}</div>
+        <div class="cell">{{ board[2][0] }}</div>
+        <div class="cell">{{ board[2][1] }}</div>
+        <div class="cell">{{ board[2][2] }}</div>            
+    </div>
+
+    <br>
+
+    <form action="" method="get">
+        <input type="text" name="input" id="input">
+    </form>
+</body>
+</html>
+
+<style>
+
+    .outer-wall {
+        border: 2px solid black;
+        display: flex;
+        width: 162px;
+        height: 162px;
+        flex-wrap: wrap;
+    }
+
+    .cell {
+        border: 2px solid black;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: sans-serif;
+    }
+</style>

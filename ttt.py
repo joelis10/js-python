@@ -33,16 +33,16 @@ def make_list_of_free_fields(board):
     return free
 
 # take user input in the CLI
-def cli_enter_move(board):
+def cli_enter_move(board, free):
     cli_input = input("Enter your move (1 - 9):")
 
     if len(cli_input) == 1 and cli_input >= '1' and cli_input <= '9':
-        player_move(cli_input, board)
+        player_move(cli_input, board, free)
     else:
         raise Exception("Move out of bounds.")
 
 # check user input against current free spaces 
-def player_move(input, board):
+def player_move(input, board, free):
     input = int(input) - 1
     
     row = input // 3
@@ -54,6 +54,9 @@ def player_move(input, board):
         raise Exception("Cell occupied, choose another (sign =" + sign + ")")
     else:
         board[row][col] = 'O'
+        print(free)
+        free.remove((row, col))
+
         
     return board
 
@@ -80,11 +83,11 @@ def winner_checker(board, sign):
     return None 
 
 # let computer have a 'turn'
-def comp_turn(board, turns, free):
+def comp_turn(board, free):
     valid = False
 
     while not valid:
-        if turns > 0:
+        if len(free) > 0:
             comp_move = randrange(1, 9)
             print ("comp_move = ", comp_move)
 
@@ -97,27 +100,25 @@ def comp_turn(board, turns, free):
 
             print ("row = ", row)
             print ("col = ", col)
-
-            valid = board[row][col] in ['O', 'X']
         
-            if valid:
-                continue
-            else:
+            if (row, col) in free:
                 board[row][col] = 'X'
+                free.remove((row, col))
+            else:
+                comp_turn(board, free)
 
             winner = winner_checker(board, 'X')
-            turns -=1
 
             return winner
 
-def human_turn(board):
-    cli_enter_move(board)
+def human_turn(board, free):
+    cli_enter_move(board, free)
     winner = winner_checker(board, 'O')
 
     return winner
 
-def game_over(winner, board, turns):
-    if winner == None and turns == 0:
+def game_over(winner, board, free):
+    if winner == None and len(free) == 0:
         cli_display_board(board)
         print("There are no spaces left, the game ends in a tie :(")
         exit()
@@ -130,18 +131,19 @@ if __name__ == "__main__":
     board = initialise_state()
     free = make_list_of_free_fields(board)
 
-    turns = 4
-
     while len(free):
 
         cli_display_board(board)
 
         if human:
-            winner = human_turn(board)
-            game_over(winner, board, turns)
+            winner = human_turn(board, free)
+            game_over(winner, board, free)
+            print(free)
         else:
-            winner = comp_turn(board, turns, free)
-            game_over(winner, board, turns)
+            winner = comp_turn(board, free)
+            game_over(winner, board, free)
+            print(free)
+
 
         human = not human
         free = make_list_of_free_fields(board)

@@ -1,32 +1,27 @@
-from flask import Flask, request, render_template
-import tictactoe
+from flask import Flask, render_template, flash, redirect, render_template, request, session, url_for
+import ttt
 
 app = Flask(__name__)
 
+
 @app.route('/')
-def main():
+def tictactoe():
+    """Display board for given state and move"""
     input = request.args.get("input", "")
-    return (
-        """
-        <form method="get">
-            <input type="text" name="input" placeholder="Enter a name">
-        </form>
-        """ + "Hello, " + input
-    )
+    cur_board = request.args.get("state", "")
 
+    board = ttt.initialise_state(cur_board)
+    free = ttt.make_list_of_free_fields(board)
 
-@app.route('/tictactoe/')
-def ttt():
+    if len(free) == 9:
+        winner = ttt.comp_turn(board, free)
+        return render_template('/ttt.html', board=board, free=free, input=input, state=ttt.board_to_str(board), winner=winner)
 
-    board = tictactoe.initialiseState()
-    freeSpaces = tictactoe.calculateSpaces(board)
-    turns = 4
+    if input:
+        board = ttt.player_move(input, board, free)
+        winner = ttt.winner_checker(board, 'O', free)
 
-    while len(freeSpaces):
-        input = request.args.get("input", "")
+    if input and winner is None:
+        winner = ttt.comp_turn(board, free)
 
-        if input:
-            tictactoe.enterMove(board, input)
-            render_template('python.html', board=board, freeSpaces=freeSpaces, input=input, overallWinner=overallWinner)
-        else:
-            return render_template('python.html', board=board, freeSpaces=freeSpaces, input=input)
+    return render_template('/ttt.html', board=board, state=ttt.board_to_str(board), free=free, input=input, winner=winner)

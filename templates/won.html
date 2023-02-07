@@ -1,0 +1,14 @@
+<div class="new-game">
+    <p>{{ winner }} won the game!</p> <a href="{{ url_for('tictactoe') }}"><button>New Game</button></a>
+</div>
+
+<style>
+    .new-game {
+        display: flex;
+        margin: 10px 0;
+        justify-content: center;
+        align-items: center;
+    } .new-game button {
+        margin-left: 10px;
+    }
+</style>

@@ -8,7 +8,7 @@
 </head>
 <body> 
 
-    {% if winner == 'tie' %}
+    {% if winner == None and free|length == 2 %}
         {% set template = '/tie.html' %} {% include template %}
 
         <style>
@@ -19,7 +19,7 @@
 
     {% endif %}
 
-    {% if winner != 'tie' and winner != None %}
+    {% if free|length > 2 and winner != None %}
         {% set template = '/won.html' %} {% include template %}
 
         <style>
@@ -42,12 +42,10 @@
         <div class="cell noselect">{{ board[2][2] }}</div>            
     </div>
     <br>
-    <p id="desc">Click a cell, then click Go.</p>
-
     <form action="" method="get">
         <input type="hidden" name="state" value="{{state}}" />
         <input type="hidden" name="input" id="input">
-        <button class="disabled" type="submit" id="submit">Go ></button>
+        <button class="disabled valid" type="submit" id="submit">Choose a cell to start...</button>
     </form>
 
 </body>
@@ -59,6 +57,7 @@
         display: flex;
         align-items: center;
         flex-direction: column;
+        font-family: sans-serif;
     }
 
     .outer-wall {
@@ -76,11 +75,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        font-family: sans-serif;
         cursor: pointer;
-    } .cell:focus {
-        background-color: green;
-        color: white;
     }
 
     .noselect {
@@ -90,6 +85,25 @@
     .disabled {
         opacity: 0.6;
         pointer-events: none;
+    }
+
+    .valid {
+        border: 2px solid black;
+    }
+
+    .invalid {
+        border: 2px solid red;
+    }
+
+    #submit {
+        border-radius: 5px;
+        background-color: transparent;
+    }
+
+    #submit:hover { 
+        cursor: pointer;
+        background-color: black;
+        color: white;
     }
 
 </style>

@@ -115,8 +115,11 @@ def set_move(board, move, value):
     return board
 
 
-def player_move(input, board, free):
+def player_move(input, board):
     """check user input against current free spaces"""
+
+    free = make_list_of_free_fields(board)
+
     input = int(input) - 1
     row = input // 3
     col = input % 3
@@ -133,6 +136,7 @@ def player_move(input, board, free):
 
 def winner_checker(board, sign, free):
     """Check if either player has 3 in a row"""
+    # TODO REPLACE strings with CONSTANTS
     if sign == 'X':
         winner = 'computer'
     elif sign == 'O':
@@ -151,39 +155,50 @@ def winner_checker(board, sign, free):
             diag2 = False
     if diag1 or diag2:
         return winner
-    if len(free) == 0:
-        return None
     return None
 
 
-def comp_turn(board, free):
-    """Let the computer have a 'turn'"""
-    valid = False
+def comp_turn(board):
+    """
+        Let the computer have a 'turn' -
+        Based on the current state of the board
+        Calculate the remaining moves available.
+        IF there's more than one remaining field, calculate randrange based on len(free)
+        Return the board - just like the player_move()
+    """
 
-    while not valid:
-        if len(free) > 0:
-            comp_move = randrange(1, 9)
+    free = make_list_of_free_fields(board)
 
-            valid = comp_move >= 1 and comp_move <= 9
-            if not valid:
-                continue
+    if len(free) != 1:
+        comp_move = randrange(1, 9)
 
-            row = comp_move // 3
-            col = comp_move % 3
+        row = comp_move // 3
+        col = comp_move % 3
 
-            if (row, col) in free:
-                board[row][col] = 'X'
-                free.remove((row, col))
-            else:
-                comp_turn(board, free)
+        if (row, col) in free:
+            board[row][col] = 'X'
+            free.remove((row, col))
+        else:
+            comp_turn(board)
 
-            winner = winner_checker(board, 'X', free)
+        winner = winner_checker(board, 'X', free)
 
-            return winner
+        return winner
+
+    elif len(free) == 1:
+        row = free[0][0]
+        col = free[0][1]
+        board[row][col] = 'X'
+
+        free.remove((row, col))
+        winner = winner_checker(board, 'X', free)
+
+        return winner
 
 
-def human_turn(board, free):
+def cli_human_turn(board, free):
     """Begin the human's turn"""
+    # TODO function cli-specific but doesn't warn of this
     cli_enter_move(board, free)
     winner = winner_checker(board, 'O', free)
 
@@ -200,7 +215,7 @@ def main():
     while len(free):
 
         if human:
-            winner = human_turn(board, free)
+            winner = cli_human_turn(board, free)
             cli_display_board(board)
         else:
             winner = comp_turn(board, free)

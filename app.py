@@ -14,14 +14,14 @@ def tictactoe():
     free = ttt.make_list_of_free_fields(board)
 
     if len(free) == 9:
-        winner = ttt.comp_turn(board, free)
+        winner = ttt.comp_turn(board)
         return render_template('/ttt.html', board=board, free=free, input=input, state=ttt.board_to_str(board), winner=winner)
 
     if input:
-        board = ttt.player_move(input, board, free)
+        board = ttt.player_move(input, board)
         winner = ttt.winner_checker(board, 'O', free)
 
     if input and winner is None:
-        winner = ttt.comp_turn(board, free)
+        winner = ttt.comp_turn(board)
 
     return render_template('/ttt.html', board=board, state=ttt.board_to_str(board), free=free, input=input, winner=winner)

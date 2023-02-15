@@ -1,14 +1,19 @@
 <div class="new-game">
-    <p>{{ winner }} won the game!</p> <a href="{{ url_for('tictactoe') }}"><button id="submit" class="valid">New Game</button></a>
+    <p>{{ winner }} won the game!</p> <a href="{{ url_for('tictactoe') }}"><button>New Game</button></a>
 </div>
 
 <style>
     .new-game {
         display: flex;
         margin: 10px 0;
-        justify-content: center;
         align-items: center;
     } .new-game button {
         margin-left: 10px;
+        border: 2px solid blue;
+        border-radius: 5px;
+    } .new-game button:hover {
+        cursor: pointer;
+        background-color: blue;
+        color: white;
     }
 </style>

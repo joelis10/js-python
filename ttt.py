@@ -99,6 +99,7 @@ def get_move(board, move):
     """Board is a list of lists
     move is an integer/string in the range 1-9
     """
+    # TODO: Use this function where appropriate
     input = int(move) - 1
     row = input // 3
     col = input % 3
@@ -107,6 +108,7 @@ def get_move(board, move):
 
 
 def set_move(board, move, value):
+    # TODO: Use this function where appropriate
     input = int(move) - 1
     row = input // 3
     col = input % 3

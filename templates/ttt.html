@@ -19,7 +19,7 @@
 
     {% endif %}
 
-    {% if free|length > 2 and winner != None %}
+    {% if free|length >= 2 and winner != None %}
         {% set template = '/won.html' %} {% include template %}
 
         <style>
@@ -31,21 +31,21 @@
     {% endif %}
 
     <div class="outer-wall">
-        <div class="cell noselect">{{ board[0][0] }}</div>
-        <div class="cell noselect">{{ board[0][1] }}</div>
-        <div class="cell noselect">{{ board[0][2] }}</div>
-        <div class="cell noselect">{{ board[1][0] }}</div>
-        <div class="cell noselect">{{ board[1][1] }}</div>
-        <div class="cell noselect">{{ board[1][2] }}</div>
-        <div class="cell noselect">{{ board[2][0] }}</div>
-        <div class="cell noselect">{{ board[2][1] }}</div>
-        <div class="cell noselect">{{ board[2][2] }}</div>            
+        <button class="cell noselect">{{ board[0][0] }}</button>
+        <button class="cell noselect">{{ board[0][1] }}</button>
+        <button class="cell noselect">{{ board[0][2] }}</button>
+        <button class="cell noselect">{{ board[1][0] }}</button>
+        <button class="cell noselect">{{ board[1][1] }}</button>
+        <button class="cell noselect">{{ board[1][2] }}</button>
+        <button class="cell noselect">{{ board[2][0] }}</button>
+        <button class="cell noselect">{{ board[2][1] }}</button>
+        <button class="cell noselect">{{ board[2][2] }}</button>            
     </div>
     <br>
     <form action="" method="get">
         <input type="hidden" name="state" value="{{state}}" />
         <input type="hidden" name="input" id="input">
-        <button class="disabled valid" type="submit" id="submit">Choose a cell to start...</button>
+        <button class="disabled valid noselect" type="submit" id="submit">Choose a cell to start...</button>
     </form>
 
 </body>
@@ -63,8 +63,8 @@
     .outer-wall {
         border: 2px solid black;
         display: flex;
-        width: 162px;
-        height: 162px;
+        width: 150px;
+        height: 150px;
         flex-wrap: wrap;
     }
 
@@ -76,6 +76,13 @@
         align-items: center;
         justify-content: center;
         cursor: pointer;
+        background-color: transparent;
+    } .cell:hover{
+        background-color: black;
+        color: white;
+    } .cell:focus {
+        background-color: green;
+        color: white;
     }
 
     .noselect {

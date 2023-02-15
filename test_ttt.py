@@ -1,4 +1,7 @@
-"""Simple tests for Tictactoe functions."""
+"""Simple tests for Tictactoe functions.
+
+Use pytest to run these tests.
+"""
 import ttt
 
 
@@ -48,3 +51,10 @@ def test_str_to_board_x9():
 
 def test_str_to_board_alternates():
     assert ttt.str_to_board("XOXOXOXOX") == BOARD_FINAL_ALTERNATES
+
+
+def test_get_move():
+    assert ttt.get_move(BOARD_BLANK, 1) == 1
+
+def test_get_move_2():
+    assert ttt.get_move(BOARD_BLANK, 2) == 2

@@ -19,7 +19,7 @@ def tictactoe():
 
     if input:
         board = ttt.player_move(input, board)
-        winner = ttt.winner_checker(board, 'O')
+        winner = ttt.winner_checker(board, 'O') # TODO Use the PLAYER_* constants
 
     if input and winner is None:
         winner = ttt.comp_turn(board)

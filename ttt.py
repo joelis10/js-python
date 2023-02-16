@@ -3,8 +3,12 @@ Joel's majestic Tictactoe game.
 Logic and commandline implementation.
 Flask code will import the logic...
 """
-from random import randrange
+import random
 import sys
+
+PLAYER_X = 'X'
+PLAYER_O = 'O'
+PLAYERS = (PLAYER_X, PLAYER_O)
 
 
 def cli_display_board(board):
@@ -41,9 +45,6 @@ def board_to_str(board) -> str:
 
 def str_to_board(str_board) -> list:
     """Convert the string to a board"""
-    # board = []
-    # board[:] = str_board[slice(0, 9)]
-
     # Create a new blank board that will be undated with moves
     board = initialise_state()
     # Loop through the characters in str_board
@@ -57,12 +58,28 @@ def str_to_board(str_board) -> list:
     last_cell = min(len(str_board), 9)
     for x in range(0, last_cell):
         cur_value = str_board[x]
-        if cur_value not in ['X', 'O']:
+        if cur_value not in PLAYERS:
             continue
         board = set_move(board, x+1, cur_value)
-        # check = get_move(board, ch)
-        # print(check)
 
+    return board
+
+
+def get_move(move):
+    """Board is a list of lists
+    move is an integer/string in the range 1-9
+    """
+    input = int(move) - 1
+    row = input // 3
+    col = input % 3
+
+    return row, col
+
+
+def set_move(board, move, value):
+    row, col = get_move(move)
+
+    board[row][col] = value
     return board
 
 
@@ -80,7 +97,7 @@ def make_list_of_free_fields(board):
     free = []
     for row in range(3):
         for col in range(3):
-            if board[row][col] not in ['O', 'X']:
+            if board[row][col] not in PLAYERS:
                 free.append((row, col))
     return free
 
@@ -95,54 +112,28 @@ def cli_enter_move(board, free):
         raise Exception("Move out of bounds.")
 
 
-def get_move(board, move):
-    """Board is a list of lists
-    move is an integer/string in the range 1-9
-    """
-    # TODO: Use this function where appropriate
-    input = int(move) - 1
-    row = input // 3
-    col = input % 3
-
-    return board[row][col]
-
-
-def set_move(board, move, value):
-    # TODO: Use this function where appropriate
-    input = int(move) - 1
-    row = input // 3
-    col = input % 3
-
-    board[row][col] = value
-    return board
-
-
 def player_move(input, board):
     """check user input against current free spaces"""
 
     free = make_list_of_free_fields(board)
 
-    input = int(input) - 1
-    row = input // 3
-    col = input % 3
-
+    row, col = get_move(input)
     sign = board[row][col]
 
-    if sign == 'O' or sign == 'X':
+    if sign in PLAYERS:  # if sign == 'O' or sign == 'X':
         raise Exception("Cell occupied, choose another (sign =" + sign + ")")
     else:
-        board[row][col] = 'O'
+        board[row][col] = PLAYER_O
         free.remove((row, col))
     return board
 
 
-def winner_checker(board, sign, free):
+def winner_checker(board, sign):
     """Check if either player has 3 in a row"""
-    # TODO REPLACE strings with CONSTANTS
-    if sign == 'X':
-        winner = 'computer'
-    elif sign == 'O':
-        winner = 'player'
+    if sign == PLAYER_X:
+        winner = "computer"
+    elif sign == PLAYER_O:
+        winner = "player"
 
     diag1 = diag2 = True
 
@@ -171,38 +162,21 @@ def comp_turn(board):
 
     free = make_list_of_free_fields(board)
 
-    if len(free) != 1:
-        comp_move = randrange(1, 9)
+    if len(free) != 0:
+        comp_move = random.choice(free)
 
-        row = comp_move // 3
-        col = comp_move % 3
+        board[comp_move[0]][comp_move[1]] = PLAYER_X
+        free.remove((comp_move))
 
-        if (row, col) in free:
-            board[row][col] = 'X'
-            free.remove((row, col))
-        else:
-            comp_turn(board)
-
-        winner = winner_checker(board, 'X', free)
-
-        return winner
-
-    elif len(free) == 1:
-        row = free[0][0]
-        col = free[0][1]
-        board[row][col] = 'X'
-
-        free.remove((row, col))
-        winner = winner_checker(board, 'X', free)
+        winner = winner_checker(board, PLAYER_X)
 
         return winner
 
 
 def cli_human_turn(board, free):
     """Begin the human's turn"""
-    # TODO function cli-specific but doesn't warn of this
     cli_enter_move(board, free)
-    winner = winner_checker(board, 'O', free)
+    winner = winner_checker(board, PLAYER_O)
 
     return winner
 

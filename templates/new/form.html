@@ -1,0 +1,10 @@
+{% extends "/new/tictactoe.html" %}
+{% block form %}
+
+<form action="" method="get">
+    <input type="hidden" name="state" value="{{state}}" />
+    <input type="hidden" name="input" id="input">
+    <button class="disabled valid noselect" type="submit" id="submit">Choose a cell to start...</button>
+</form>
+
+{% endblock %}

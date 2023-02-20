@@ -8,24 +8,20 @@
 </head>
 <body> 
 
-    {% if winner == None and free|length == 2 %}
+    {% if free|length == 2 and result == GAME_TIE %}
         {% set template = '/tie.html' %} {% include template %}
 
         <style>
-            form, #desc {
+            form {
                 display: none;
             }
         </style>
 
-    {% endif %}
-
-    {% if free|length >= 2 and winner != None %}
+    {% elif free|length >= 2 and result != None  %}
         {% set template = '/won.html' %} {% include template %}
 
         <style>
-            form, #desc {
-                display: none;
-            }
+
         </style>
 
     {% endif %}
@@ -77,12 +73,15 @@
         justify-content: center;
         cursor: pointer;
         background-color: transparent;
+        transition: .2s;
     } .cell:hover{
         background-color: black;
         color: white;
+        transition: .2s;
     } .cell:focus {
         background-color: green;
         color: white;
+        transition: .2s;
     }
 
     .noselect {

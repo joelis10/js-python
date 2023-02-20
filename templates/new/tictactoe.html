@@ -1,0 +1,23 @@
+{% extends "/new/layout.html" %}
+{% block content %}
+
+<div class="outer-wall">
+    <button class="cell noselect">{{ board[0][0] }}</button>
+    <button class="cell noselect">{{ board[0][1] }}</button>
+    <button class="cell noselect">{{ board[0][2] }}</button>
+    <button class="cell noselect">{{ board[1][0] }}</button>
+    <button class="cell noselect">{{ board[1][1] }}</button>
+    <button class="cell noselect">{{ board[1][2] }}</button>
+    <button class="cell noselect">{{ board[2][0] }}</button>
+    <button class="cell noselect">{{ board[2][1] }}</button>
+    <button class="cell noselect">{{ board[2][2] }}</button>            
+</div>
+<br>
+
+    {% block form %}
+    {% endblock %}
+
+    {% block result %}
+    {% endblock %}
+
+{% endblock %}

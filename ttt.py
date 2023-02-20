@@ -9,6 +9,7 @@ import sys
 PLAYER_X = 'X'
 PLAYER_O = 'O'
 PLAYERS = (PLAYER_X, PLAYER_O)
+GAME_TIE = 'T'
 
 
 def cli_display_board(board):
@@ -65,7 +66,7 @@ def str_to_board(str_board) -> list:
     return board
 
 
-def get_move(move):
+def calc_cell_from_move(move):
     """Board is a list of lists
     move is an integer/string in the range 1-9
     """
@@ -76,8 +77,17 @@ def get_move(move):
     return row, col
 
 
+def get_move(board, move):
+    """Board is a list of lists
+    move is an integer/string in the range 1-9
+    """
+    row, col = calc_cell_from_move(move)
+
+    return board[row][col]
+
+
 def set_move(board, move, value):
-    row, col = get_move(move)
+    row, col = calc_cell_from_move(move)
 
     board[row][col] = value
     return board
@@ -102,12 +112,12 @@ def make_list_of_free_fields(board):
     return free
 
 
-def cli_enter_move(board, free):
+def cli_enter_move(board):
     """Take the user CLI"""
     cli_input = input("Enter your move (1 - 9):")
 
     if len(cli_input) == 1 and cli_input >= '1' and cli_input <= '9':
-        player_move(cli_input, board, free)
+        return player_move(cli_input, board)
     else:
         raise Exception("Move out of bounds.")
 
@@ -115,25 +125,21 @@ def cli_enter_move(board, free):
 def player_move(input, board):
     """check user input against current free spaces"""
 
-    free = make_list_of_free_fields(board)
-
-    row, col = get_move(input)
-    sign = board[row][col]
+    # row, col = calc_cell_from_move(input)
+    # sign = board[row][col]
+    sign = get_move(board, input)
 
     if sign in PLAYERS:  # if sign == 'O' or sign == 'X':
         raise Exception("Cell occupied, choose another (sign =" + sign + ")")
     else:
-        board[row][col] = PLAYER_O
-        free.remove((row, col))
+        # board[row][col] = PLAYER_O
+        board = set_move(board, input, PLAYER_O)
     return board
 
 
 def winner_checker(board, sign):
     """Check if either player has 3 in a row"""
-    if sign == PLAYER_X:
-        winner = "computer"
-    elif sign == PLAYER_O:
-        winner = "player"
+    winner = sign
 
     diag1 = diag2 = True
 
@@ -148,6 +154,20 @@ def winner_checker(board, sign):
             diag2 = False
     if diag1 or diag2:
         return winner
+    return None
+
+
+def check_result(board):
+    """Check if someone has won.
+    Check if it's a tie"""
+    free = make_list_of_free_fields(board)
+    if not free:
+        # Return Tie state
+        return GAME_TIE
+    if winner_checker(board, PLAYER_X):
+        return PLAYER_X
+    if winner_checker(board, PLAYER_O):
+        return PLAYER_O
     return None
 
 
@@ -166,23 +186,23 @@ def comp_turn(board):
         comp_move = random.choice(free)
 
         board[comp_move[0]][comp_move[1]] = PLAYER_X
-        free.remove((comp_move))
 
-        winner = winner_checker(board, PLAYER_X)
+        # winner = winner_checker(board, PLAYER_X)
 
-        return winner
+        # return winner
+    return board
 
 
-def cli_human_turn(board, free):
+def cli_human_turn(board):
     """Begin the human's turn"""
-    cli_enter_move(board, free)
-    winner = winner_checker(board, PLAYER_O)
-
-    return winner
+    return cli_enter_move(board)
+    # winner = winner_checker(board, PLAYER_O)
+# 
+    # return winner
 
 
 def main():
-    human = True
+    human = False
     board = initialise_state()
     free = make_list_of_free_fields(board)
 
@@ -191,16 +211,22 @@ def main():
     while len(free):
 
         if human:
-            winner = cli_human_turn(board, free)
+            # winner = cli_human_turn(board, free)
+            board = cli_human_turn(board)
             cli_display_board(board)
         else:
-            winner = comp_turn(board, free)
+            # winner = comp_turn(board)
+            board = comp_turn(board)
             cli_display_board(board)
-        if winner is None and len(free) == 0:
+        result = check_result(board)
+
+        # if winner is None and len(free) == 1:
+        if result == GAME_TIE:
             print("There are no spaces left, the game ends in a tie :(")
             sys.exit()
-        elif winner is not None:
-            print(winner, "has won!")
+        # elif winner is not None:
+        elif result is not None:
+            print(result, "has won!")
             sys.exit()
 
         human = not human
